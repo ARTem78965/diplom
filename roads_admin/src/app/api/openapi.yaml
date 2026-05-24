@@ -1,0 +1,1327 @@
+openapi: 3.0.3
+info:
+  title: Админка дороги
+  description: Сервис для распознование дорожных знаков.
+  version: 1.0.1
+paths:
+  /login:
+    post:
+      summary: Авторизация пользователя
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+      responses:
+        '200':
+          description: Пользователь авторизованн
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  login:
+                    type: string
+                  privilege_id:
+                    type: integer
+                  is_active:
+                    type: boolean
+        '401':
+          description: Ошибка логина или пароля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  is_active:
+                    type: boolean
+                  message:
+                    type: string    
+
+  /logout:
+    post:
+      summary: Выход
+      operationId: logout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutUser'
+      responses:
+        '200':
+          description: Выход выполнен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /users:
+    get:
+      description: Получение пользователей
+      operationId: read_users
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    post:
+      description: Создание пользователя
+      operationId: create_user
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                login:
+                  type: string
+                password:
+                  type: string
+                privilege_id:
+                  type: integer
+      responses:
+        "201":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    put:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Обновление пользователя
+      operationId: update_user
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                login:
+                  type: string
+                password:
+                  type: string
+                privilege_id:
+                  type: integer
+                is_active:
+                  type: boolean
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+    delete:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Удаление пользователя
+      operationId: delete_user
+      responses:
+        "204":
+          description: OK!
+          content:
+            text/html; charset=utf-8:
+              schema:
+                nullable: true
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /user:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Получение записи по условию
+      operationId: get_user
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /privileges:
+    get:
+      description: Получение пользователей
+      operationId: read_privileges
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Privilege"
+
+  /privilege:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Получение записи по условию
+      operationId: get_privilege
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Privilege"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /roads:
+    get:
+      description: Получение дороги
+      operationId: read_roads
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Road"
+
+    post:
+      description: Создание дороги
+      operationId: create_road
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                number_road:
+                  type: string
+                name_road:
+                  type: string
+      responses:
+        "201":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Road"
+
+    put:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Обновление дороги
+      operationId: update_road
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                number_road:
+                  type: string
+                name_road:
+                  type: string
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Road"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+    delete:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Удаление дороги
+      operationId: delete_road
+      responses:
+        "204":
+          description: OK!
+          content:
+            text/html; charset=utf-8:
+              schema:
+                nullable: true
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /road:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Получение записи по условию
+      operationId: get_road
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Road"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /sings:
+    get:
+      description: Получение дорожного знака
+      operationId: read_sings
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sing"
+        '401':
+          description: Ошибка логина или пароля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string   
+
+    post:
+      description: Создание дорожного знака
+      operationId: create_sing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name_sing:
+                  type: string
+      responses:
+        "201":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sing"
+        '401':
+          description: Ошибка логина или пароля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string   
+
+    put:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Обновление дорожного знака
+      operationId: update_sing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name_sing:
+                  type: string
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sing"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+        '401':
+          description: Ошибка логина или пароля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string   
+
+    delete:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Удаление дорожного знака
+      operationId: delete_sing
+      responses:
+        "204":
+          description: OK!
+          content:
+            text/html; charset=utf-8:
+              schema:
+                nullable: true
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+        '401':
+          description: Ошибка логина или пароля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string   
+
+  /sing:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Получение записи по условию
+      operationId: get_sing
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sing"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+        '401':
+          description: Ошибка логина или пароля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string   
+
+  /roads/sings:
+    get:
+      description: Получение знаков на дорогах
+      operationId: read_roads_sings
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoadSing"
+
+    post:
+      description: Создание знака на дороге
+      operationId: create_road_sing
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                road_id:
+                  type: integer
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                image:
+                  type: string
+                  format: binary
+              required:
+                - road_id
+
+      responses:
+        "201":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoadSing"
+        "400":
+          description: Плохой запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        "422":
+          description: Не удалось обработать инструкции содержимого
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error422"
+
+    put:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Обновление знака на дороге
+      operationId: update_road_sing
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                road_id:
+                  type: integer
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                image:
+                  type: string
+                  format: binary
+              required:
+                - road_id
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoadSing"
+        "400":
+          description: Плохой запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+        "422":
+          description: Не удалось обработать инструкции содержимого
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error422"
+
+    delete:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Удаление знака на дороге
+      operationId: delete_road_sing
+      responses:
+        "204":
+          description: OK!
+          content:
+            text/html; charset=utf-8:
+              schema:
+                nullable: true
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /road/sing:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Получение записи по условию
+      operationId: get_road_sing
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoadSing"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404" 
+
+  /crossroads:
+    get:
+      description: Получение перекрестков
+      operationId: read_crossroads
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crossroad"
+
+    post:
+      description: Создание перекрестка
+      operationId: create_crossroad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type_crossroad:
+                  type: string
+      responses:
+        "201":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crossroad"
+
+    put:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Обновление типа перекрестка
+      operationId: update_crossroad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type_crossroad:
+                  type: string
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crossroad"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+    delete:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Удаление перекрестка
+      operationId: delete_crossroad
+      responses:
+        "204":
+          description: OK!
+          content:
+            text/html; charset=utf-8:
+              schema:
+                nullable: true
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /crossroad:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Получение записи по условию
+      operationId: get_crossroad
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crossroad"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /crossroads/roads/sings:
+    get:
+      description: Получение знаков на дорогах на перекрестках
+      operationId: read_roads_sings_crossroads
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoadSingCrossroad"
+
+    post:
+      description: Создание знака на дороге на перекрестке
+      operationId: create_road_sing_crossroad
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                road_sing_id:
+                  type: integer
+                crossroad_id:
+                  type: integer
+              required:
+                - road_sing_id
+                - crossroad_id
+
+      responses:
+        "201":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoadSingCrossroad"
+        "400":
+          description: Плохой запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        "422":
+          description: Не удалось обработать инструкции содержимого
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error422"
+
+    put:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Обновление знака на дороге на перекрестке
+      operationId: update_road_sing_crossroad
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                road_sing_id:
+                  type: integer
+                crossroad_id:
+                  type: integer
+              required:
+                - road_sing_id
+                - crossroad_id
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoadSingCrossroad"
+        "400":
+          description: Плохой запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+        "422":
+          description: Не удалось обработать инструкции содержимого
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error422"
+
+    delete:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Удаление знака на дороге на перекрестке
+      operationId: delete_road_sing_crossroad
+      responses:
+        "204":
+          description: OK!
+          content:
+            text/html; charset=utf-8:
+              schema:
+                nullable: true
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /crossroad/road/sing:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Получение записи по условию
+      operationId: get_road_sing_crossroad
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoadSingCrossroad"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404" 
+
+  /localities:
+    get:
+      description: Получение населенных пунктов
+      operationId: read_localities
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Locality"
+
+    post:
+      description: Создание населенного пункта
+      operationId: create_locality
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name_locality:
+                  type: string
+      responses:
+        "201":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Locality"
+
+    put:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Обновление населенного пункта
+      operationId: update_locality
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name_locality:
+                  type: string
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Locality"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+    delete:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Удаление населенного пункта
+      operationId: delete_locality
+      responses:
+        "204":
+          description: OK!
+          content:
+            text/html; charset=utf-8:
+              schema:
+                nullable: true
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /locality:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Получение записи по условию
+      operationId: get_locality
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Locality"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /localities/crossroads/roads/sings:
+    get:
+      description: Получение перекрестков в населенных пунктах
+      operationId: read_localities_crossroads
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocalityCrossroad"
+
+    post:
+      description: Создание перекрестка в населенном пункте
+      operationId: create_locality_crossroad
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                road_sing_crossroad_id:
+                  type: integer
+                locality_id:
+                  type: integer
+              required:
+                - road_sing_crossroad_id
+                - locality_id
+
+      responses:
+        "201":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocalityCrossroad"
+        "400":
+          description: Плохой запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        "422":
+          description: Не удалось обработать инструкции содержимого
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error422"
+
+    put:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Обновление перекрестка в населенном пункте
+      operationId: update_locality_crossroad
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                road_sing_crossroad_id:
+                  type: integer
+                locality_id:
+                  type: integer
+              required:
+                - road_sing_crossroad_id
+                - locality_id
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocalityCrossroad"
+        "400":
+          description: Плохой запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+        "422":
+          description: Не удалось обработать инструкции содержимого
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error422"
+
+    delete:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Удаление перекрестка в населенном пункте
+      operationId: delete_locality_crossroad
+      responses:
+        "204":
+          description: OK!
+          content:
+            text/html; charset=utf-8:
+              schema:
+                nullable: true
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /locality/crossroad/road/sing:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      description: Получение записи по условию
+      operationId: get_locality_crossroad
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocalityCrossroad"
+        "404":
+          description: Запись не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404" 
+
+components:
+  schemas:
+    LoginUser:
+      type: object
+      properties:
+        login:
+          type: string
+          description: Логин
+        password:
+          type: string
+          description: Пароль
+
+    LogoutUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Индификатор пользователя
+
+    User:
+      type: object
+      properties:
+        id:
+          description: Идентификатор пользователя
+          type: integer
+        name:
+          description: ФИО пользователя
+          type: string
+        login:
+          description: Логин пользователя
+          type: string
+        password:
+          description: Пароль пользователя
+          type: string
+        privilege_id:
+          description: Индификатор привелегии
+          type: integer
+        is_active:
+          description: Активность пользователя
+          type: boolean
+        created_on:
+          description: Дата создание пользователя
+          type: string
+          format: date-time
+        updated_on:
+          description: Дата обновление пользователя
+          type: string
+          format: date-time
+
+    Privilege:
+      type: object
+      properties:
+        id:
+          description: Идентификатор пользователя
+          type: integer
+        name_privilege:
+          description: Привелегия
+          type: string
+
+    Road:
+      type: object
+      properties:
+        id:
+          description: Идентификатор дороги
+          type: integer
+        name_road:
+          description: Название
+          type: string
+        number_road:
+          description: Номер
+          type: string
+
+    Sing:
+      type: object
+      properties:
+        id:
+          description: Идентификатор знака
+          type: integer
+        name_sing:
+          description: Назвнаие
+          type: string
+
+    RoadSing:
+      type: object
+      properties:
+        id:
+          description: Идентификатор записи
+          type: integer
+        road_id:
+          description: Идентификатор дороги
+          type: integer
+        sing_id:
+          description: Идентификатор знака
+          type: integer
+        latitude:
+          description: Широта
+          type: number
+        longitude:
+          description: Долгота
+          type: number
+        image:
+          description: Изображение дорожного знака
+          type: string
+        state:
+          description: Состояние дорожного знака
+          type: string
+        comment:
+          description: Рещультат
+          type: string
+
+    Crossroad:
+      type: object
+      properties:
+        id:
+          description: Идентификатор записи
+          type: integer
+        type_crossroad:
+          description: Тип перекрестка
+          type: string
+
+    RoadSingCrossroad:
+      type: object
+      properties:
+        id:
+          description: Идентификатор записи
+          type: integer
+        road_sing_id:
+          description: Идентификатор знаков на дороге
+          type: integer
+        crossroad_id:
+          description: Идентификатор перекрестка
+          type: integer
+
+    Locality:
+      type: object
+      properties:
+        id:
+          description: Идентификатор записи
+          type: integer
+        name_locality:
+          description: Название населенного пункта
+          type: string
+
+    LocalityCrossroad:
+      type: object
+      properties:
+        id:
+          description: Идентификатор записи
+          type: integer
+        road_sing_crossroad_id:
+          description: Идентификатор дорожного знака на перекрестке
+          type: integer
+        locality_id:
+          description: Идентификатор населенного пункта
+          type: integer
+
+    Error400:
+      type: object
+      properties:
+        error:
+          description: Ошибка
+          type: string
+
+    Error404:
+      type: object
+      properties:
+        error:
+          description: Ошибка
+          type: string
+
+    Error422:
+      type: object
+      properties:
+        error:
+          description: Ошибка
+          type: string
