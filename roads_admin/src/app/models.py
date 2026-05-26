@@ -73,3 +73,12 @@ class LocalityCrossroad(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, comment='ID')
     road_sing_crossroad_id = db.Column(db.Integer, db.ForeignKey('road_sing_crossroad.id'), nullable=False, comment='Crossroad_Road_Sing_ID')
     locality_id = db.Column(db.Integer, db.ForeignKey('locality.id'), nullable=False, comment='Locality_ID')
+
+
+class FixSingLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False, comment='ID')
+    date_fix = db.Column(db.DateTime(), default=datetime.utcnow)
+    name_sing = db.Column(db.String, unique=True, nullable=False, comment='Name_Sing')
+    state = db.Column(db.String, nullable=False, comment='State sing')
+    latitude = db.Column(db.Float, nullable=False, comment='Latitude')
+    longitude = db.Column(db.Float, nullable=False, comment='Longitude')

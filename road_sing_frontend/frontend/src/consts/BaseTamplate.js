@@ -89,6 +89,16 @@ function BaseTamplate(){
                                     </li>
                                 </ul>
                             </li>
+                            <li class='nav-item dropdown'>
+                                <a class='nav-link dropdown-toggle' href='#' id='navbarDarkDropdownMenuLink' role='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                    Отчетность
+                                </a>
+                                <ul class='dropdown-menu dropdown-menu-dark' aria-labelledby='navbarDarkDropdownMenuLink'>
+                                    <li>
+                                        <NavLink style={{ color: 'black' }} className={({ isActive }) => `nav-link me-3 ${isActive ? 'active fw-bold' : ''}`} to='/fix-sings' end>Отчет о замене дорожных знаков</NavLink>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                 </div>

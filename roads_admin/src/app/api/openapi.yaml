@@ -458,6 +458,27 @@ paths:
                   message:
                     type: string   
 
+  /fix-sings:
+    get:
+      description: Получение всех отремонтрованных знаков
+      operationId: read_fix_sings
+      responses:
+        "200":
+          description: OK!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FixSing"
+        '401':
+          description: Ошибка логина или пароля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string   
+
   /sing:
     get:
       parameters:
@@ -1229,6 +1250,32 @@ components:
           type: integer
         name_sing:
           description: Назвнаие
+          type: string
+
+    FixSing:
+      type: object
+      properties:
+        id:
+          description: Идентификатор записи
+          type: integer
+        date_fix:
+          description: Дата замены знака
+          type: string
+          format: date-time
+        name_sing:
+          description: Название знака
+          type: integer
+        latitude:
+          description: Широта
+          type: number
+        longitude:
+          description: Долгота
+          type: number
+        image:
+          description: Изображение дорожного знака
+          type: string
+        state:
+          description: Состояние старого знака
           type: string
 
     RoadSing:

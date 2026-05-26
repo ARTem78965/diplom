@@ -4,6 +4,7 @@ import time
 from flask import Flask
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import text
 
 from .extensions import db
 from .models import Road
@@ -85,6 +86,15 @@ def db_init(app: Flask) -> Flask:
                         db.session.add(type_crossroad)
 
                 db.session.commit()
+
+                func_exists = db.session.execute(text("""
+                    SELECT 1 from pg_proc
+                    WHERE proname = 'log_fix_state_sing'
+                    AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')
+                """)).scalar()
+                if not func_exists:
+                    create_log_fix_state_sing(app)
+
                 app.logger.info("Database initialized successfully!")
                 break
 
@@ -96,5 +106,38 @@ def db_init(app: Flask) -> Flask:
         else:
             app.logger.error("Failed to initialize database after all attempts!")
             sys.exit()
+
+def create_log_fix_state_sing(app: Flask):
+    try:
+        db.session.execute(text("""
+            CREATE OR REPLACE FUNCTION log_road_sing_fix()
+            RETURNS TRIGGER AS
+            $$
+            DECLARE
+                sing_name TEXT;
+            BEGIN
+                IF OLD.state <> 'Хорошее состояние' AND NEW.state = 'Хорошее состояние' THEN
+                    SELECT name_sing INTO sing_name
+                    FROM sing
+                    WHERE id = NEW.sing_id;
+
+                    INSERT INTO fix_sing_log (date_fix, name_sing, state, latitude, longitude)
+                    VALUES (CURRENT_TIMESTAMP, sing_name, OLD.state, NEW.latitude, NEW.longitude);
+                END IF;
+
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE TRIGGER log_fix_state_sing
+            AFTER UPDATE ON road_sing
+            FOR EACH ROW
+            EXECUTE FUNCTION log_road_sing_fix();
+        """))
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        app.logger.error(f'Error: {(e)}')
+        raise
             
     return app

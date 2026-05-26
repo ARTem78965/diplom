@@ -68,6 +68,8 @@ def register_extensions(app):
     from .api.localities_crossroads import update_locality_crossroad
     from .api.localities_crossroads import delete_locality_crossroad
 
+    from .api.log_fix_sing import read_fix_sings
+
 
     db.init_app(app)
     cors.init_app(
@@ -132,3 +134,5 @@ def register_extensions(app):
     first.add_view_func(read_localities_crossroads)
     first.add_view_func(update_locality_crossroad)
     first.add_view_func(delete_locality_crossroad)
+
+    first.add_view_func(read_fix_sings)

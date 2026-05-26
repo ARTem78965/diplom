@@ -34,6 +34,8 @@ import AddUser from './pages/users/AddUser'
 import EditUser from './pages/users/EditUser'
 import Privilege from './pages/privileges/Privilege'
 
+import FixSings from './pages/fix_sings/FixSings'
+
 import './App.css';
 
 
@@ -75,6 +77,8 @@ function App() {
         <Route path='/localities/crossroads/roads/sings' element={<LocalitiesCrossroads />} />
         <Route path='/locality/crossroad/road/sing/add' element={<AddLocalityCrossroad />} />
         <Route path='/locality/crossroad/road/sing/edit/:id' element={<EditLocalityCrossroad />} />
+
+        <Route path='/fix-sings' element={<FixSings />} />
       </Routes>
     </Router>
   );
