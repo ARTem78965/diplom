@@ -23,10 +23,6 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-    @login_manager.user_loader
-    def load_user(user_id):
-        return db.session.query(User).get(user_id)
-
 
 class Privilege(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, comment='ID')
@@ -51,7 +47,7 @@ class RoadSing(db.Model):
     longitude = db.Column(db.Float, nullable=False, comment='Longitude')
     image = db.Column(db.String, nullable=False, comment='Image')
     state = db.Column(db.String, nullable=False, comment='State sing')
-    comment = db.Column(db.String, nullable=True, comment='State sing')
+    comment = db.Column(db.String, nullable=True, comment='Commet')
 
 
 class Crossroad(db.Model):
@@ -79,6 +75,6 @@ class FixSingLog(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, comment='ID')
     date_fix = db.Column(db.DateTime(), default=datetime.utcnow)
     name_sing = db.Column(db.String, unique=True, nullable=False, comment='Name_Sing')
-    state = db.Column(db.String, nullable=False, comment='State sing')
+    state = db.Column(db.String, nullable=False, comment='Old state sing')
     latitude = db.Column(db.Float, nullable=False, comment='Latitude')
     longitude = db.Column(db.Float, nullable=False, comment='Longitude')
